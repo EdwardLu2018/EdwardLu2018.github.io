@@ -8,13 +8,15 @@ var prompt = "user@edwards_website:$&nbsp;";
 var months = ["Jan", "Feb", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "Nov", "Dec"];
 var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
+var files = ["info.txt"]
+
 function make_header() {
     var d = new Date();
     document.getElementById("header").innerHTML =
     `Last login: ${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} on ttys000`;
 }
 
-function insert_prompt() {
+function print_prompt() {
     var terminal = document.getElementById("terminal");
     var cursor = document.getElementById("cursor");
     var text = document.getElementById("text");
@@ -39,7 +41,7 @@ function type_info() {
         var terminal = document.getElementById("terminal");
         text.innerHTML += to_add;
         if (info.charAt(i) == '\n') {
-            insert_prompt();
+            print_prompt();
         }
         ++i;
         setTimeout(type_info, 50);
@@ -69,11 +71,18 @@ function perform_command(command) {
         case "":
             break;
         case "ls":
-            text.innerHTML += "info.txt"
+            if (command.length == 1) {
+                for (var j = 0; j < files.length; ++j) {
+                    text.innerHTML += files[j]
+                }
+            }
+            else {
+                text.innerHTML += `ls: ${command[1]}: No such file or directory`
+            }
             break;
         case "cat":
             switch (command[1]) {
-                case "info.txt":
+                case files[0]:
                     text.innerHTML += "Edward Lu - ECE student at Carnegie Mellon University class of 2022"
                     break;
                 default:
@@ -89,14 +98,19 @@ function perform_command(command) {
 function handle_keypress(event) {
     if (!typing) {
         var text = document.getElementById("text");
-        if (event.key != 'Enter') {
+        if (event.key == 'Backspace') {
+            if (text.innerHTML.length != 0) {
+                text.innerHTML = text.innerHTML.slice(0, -1);
+            }
+        }
+        else if (event.key != 'Enter') {
             text.innerHTML += event.key;
         }
         else {
             var command = text.innerHTML;
             perform_command(command);
             if (command != "") text.innerHTML += '\n';
-            insert_prompt();
+            print_prompt();
         }
     }
 }
@@ -104,10 +118,10 @@ function handle_keypress(event) {
 function main() {
     var terminal = document.getElementById("terminal");
     make_header();
-    insert_prompt();
+    print_prompt();
     type_info();
 }
 
 window.onload = main();
 window.setInterval(blink_cursor, 750);
-window.addEventListener('keypress', handle_keypress);
+window.addEventListener('keydown', handle_keypress);
