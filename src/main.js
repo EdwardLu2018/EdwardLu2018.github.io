@@ -1,25 +1,41 @@
 var i = 0;
-var info =
+
+let info =
 `cat info.txt
 Edward Lu - ECE student at Carnegie Mellon University class of 2022
 `;
+
 var typing = true;
-var prompt = "user@edwards_website:$&nbsp;";
-var months = ["Jan", "Feb", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "Nov", "Dec"];
-var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+var type_speed = 20;
 
-var files = ["info.txt"]
+let prompt = "user@edwards_website:$ ";
 
-function make_header() {
-    var d = new Date();
-    document.getElementById("header").innerHTML =
-    `Last login: ${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} on ttys000`;
+var files = [
+"info.txt",
+"github.txt"
+];
+
+let months = ["Jan", "Feb", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "Nov", "Dec"];
+let days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+function display_header() {
+    let d = new Date();
+    let header =
+    `Welcome to Edwards Website LTS (GNU/Linux ${Math.round(Math.random() * 5 + 1)}.${Math.round(Math.random() * 5 + 1)}.${Math.round(Math.random() * 5 + 1)}-${Math.round(Math.random() * 9 + 50)}-generic x86_64)
+    <br><br>
+    ${Math.round(Math.random() * 299 + 100)} packages can be updated.
+    ${Math.round(Math.random() * 6 + 2)} updates are security updates.
+    <br><br>
+    Your Hardware Enablement Stack (HWE) is supported until April ${Math.round(Math.random() * 100 + d.getFullYear())}.
+    <br>
+    Last login: ${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} on ttys000`;
+
+    document.getElementById("header").innerHTML = header;
 }
 
 function print_prompt() {
-    var terminal = document.getElementById("terminal");
-    var cursor = document.getElementById("cursor");
-    var text = document.getElementById("text");
+    let terminal = document.getElementById("terminal");
+    let cursor = document.getElementById("cursor");
+    let text = document.getElementById("text");
     if (cursor) {
         cursor.parentNode.removeChild(cursor);
     }
@@ -36,9 +52,9 @@ function print_prompt() {
 
 function type_info() {
     if (i < info.length) {
-        var to_add = info.charAt(i);
-        var text = document.getElementById("text");
-        var terminal = document.getElementById("terminal");
+        let to_add = info.charAt(i);
+        let text = document.getElementById("text");
+        let terminal = document.getElementById("terminal");
         text.innerHTML += to_add;
         if (info.charAt(i) == '\n') {
             print_prompt();
@@ -52,7 +68,7 @@ function type_info() {
 }
 
 function blink_cursor() {
-    var cursor = document.getElementById("cursor");
+    let cursor = document.getElementById("cursor");
     if (cursor) {
         let cursor_text = cursor.innerHTML
         if (cursor_text == "") {
@@ -64,7 +80,7 @@ function blink_cursor() {
 }
 
 function perform_command(command) {
-    var text = document.getElementById("text");
+    let text = document.getElementById("text");
     text.innerHTML += '\n';
     command = command.split(" ")
     switch (command[0]) {
@@ -73,51 +89,66 @@ function perform_command(command) {
         case "ls":
             if (command.length == 1) {
                 for (var j = 0; j < files.length; ++j) {
-                    text.innerHTML += files[j]
+                    text.innerHTML += files[j] + '\n';
                 }
             }
+            else if (files.includes(command[1])) {
+                text.innerHTML += `${command[1]}\n`
+            }
             else {
-                text.innerHTML += `ls: ${command[1]}: No such file or directory`
+                text.innerHTML += `ls: ${command[1]}: No such file or directory\n`
             }
             break;
         case "cat":
             switch (command[1]) {
                 case files[0]:
-                    text.innerHTML += "Edward Lu - ECE student at Carnegie Mellon University class of 2022"
+                    text.innerHTML += "Edward Lu - ECE student at Carnegie Mellon University class of 2022\n"
+                    break;
+                case files[1]:
+                    text.removeAttribute("id");
+                    terminal.insertAdjacentHTML('beforeend', '<a href="https://github.com/EdwardLu2018">github link</a><br>');
                     break;
                 default:
-                    text.innerHTML += `cat: ${command[1]}: No such file or directory`
+                    text.innerHTML += `cat: ${command[1]}: No such file or directory\n`
             }
             break;
+        case "pwd":
+            text.innerHTML += "/the/internet/edwardswebsite/user\n"
+            break;
         default:
-            text.innerHTML += `command not found: ${command[0]}`
+            text.innerHTML += `command not found: ${command[0]}\n`
             break;
     }
 }
 
 function handle_keypress(event) {
     if (!typing) {
-        var text = document.getElementById("text");
-        if (event.key == 'Backspace') {
-            if (text.innerHTML.length != 0) {
-                text.innerHTML = text.innerHTML.slice(0, -1);
-            }
-        }
-        else if (event.key != 'Enter') {
-            text.innerHTML += event.key;
-        }
-        else {
-            var command = text.innerHTML;
-            perform_command(command);
-            if (command != "") text.innerHTML += '\n';
-            print_prompt();
+        let text = document.getElementById("text");
+        switch (event.key) {
+            case 'Backspace':
+                if (text.innerHTML.length != 0) {
+                    text.innerHTML = text.innerHTML.slice(0, -1);
+                }
+                break;
+            case 'Enter':
+                let command = text.innerHTML;
+                perform_command(command);
+                print_prompt();
+                break;
+            case 'ArrowUp':
+            case 'ArrowDown':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                break;
+            default:
+                text.innerHTML += event.key;
+                break;
         }
     }
 }
 
 function main() {
-    var terminal = document.getElementById("terminal");
-    make_header();
+    display_header();
     print_prompt();
     type_info();
 }
