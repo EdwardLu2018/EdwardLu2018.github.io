@@ -1,5 +1,5 @@
 body {
-    background-color: #000;
+    background-color: #111111;
     color: #00af00;
     font-family: monospace;
     font-size: 20px;
@@ -8,14 +8,19 @@ body {
 p {
     margin: 0px;
     white-space: pre;
-    display:inline;
+    display: inline;
     line-height : 25px;
 }
 
 span {
     margin: 0px;
     white-space: pre;
-    display:inline;
+    display: inline;
+}
+
+a {
+    margin: 0px;
+    color: #0000ff;
 }
 
 .prompt {

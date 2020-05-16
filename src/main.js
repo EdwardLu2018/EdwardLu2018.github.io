@@ -1,31 +1,32 @@
 var i = 0;
 
 let info =
-`cat info.txt
-Edward Lu - ECE student at Carnegie Mellon University class of 2022
+`cat about.txt
+Edward Lu - ECE student at Carnegie Mellon University class of 2022.
 `;
 
-var typing = true;
-var type_speed = 20;
+var is_typing = true;
+var type_speed = 50;
 
-let prompt = "user@edwards_website:$ ";
+let prompt = "user@edwards_website:~$ ";
 
 var files = [
-"info.txt",
+"about.txt",
 "github.txt"
 ];
 
-let months = ["Jan", "Feb", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "Nov", "Dec"];
-let days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 function display_header() {
+    let months = ["Jan", "Feb", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "Nov", "Dec"];
+    let days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
     let d = new Date();
+
     let header =
-    `Welcome to Edwards Website LTS (GNU/Linux ${Math.round(Math.random() * 5 + 1)}.${Math.round(Math.random() * 5 + 1)}.${Math.round(Math.random() * 5 + 1)}-${Math.round(Math.random() * 9 + 50)}-generic x86_64)
+    `Welcome to Edward's Website LTS (GNU/Linux ${Math.round(Math.random() * 5 + 1)}.${Math.round(Math.random() * 5 + 1)}.${Math.round(Math.random() * 5 + 1)}-${Math.round(Math.random() * 9 + 50)}-generic x86_64)
     <br><br>
     ${Math.round(Math.random() * 299 + 100)} packages can be updated.
     ${Math.round(Math.random() * 6 + 2)} updates are security updates.
     <br><br>
-    Your Hardware Enablement Stack (HWE) is supported until April ${Math.round(Math.random() * 100 + d.getFullYear())}.
+    Your Hardware Enablement Stack (HWE) is supported until April ${Math.round(Math.random() * 50 + d.getFullYear())}.
     <br>
     Last login: ${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} on ttys000`;
 
@@ -60,10 +61,10 @@ function type_info() {
             print_prompt();
         }
         ++i;
-        setTimeout(type_info, 50);
+        setTimeout(type_info, type_speed);
     }
     else {
-        typing = false;
+        is_typing = false;
     }
 }
 
@@ -89,8 +90,9 @@ function perform_command(command) {
         case "ls":
             if (command.length == 1) {
                 for (var j = 0; j < files.length; ++j) {
-                    text.innerHTML += files[j] + '\n';
+                    text.innerHTML += files[j] + ' ';
                 }
+                text.innerHTML += '\n';
             }
             else if (files.includes(command[1])) {
                 text.innerHTML += `${command[1]}\n`
@@ -106,7 +108,7 @@ function perform_command(command) {
                     break;
                 case files[1]:
                     text.removeAttribute("id");
-                    terminal.insertAdjacentHTML('beforeend', '<a href="https://github.com/EdwardLu2018">github link</a><br>');
+                    terminal.insertAdjacentHTML('beforeend', '<a href="https://github.com/EdwardLu2018">link</a><br>');
                     break;
                 default:
                     text.innerHTML += `cat: ${command[1]}: No such file or directory\n`
@@ -122,7 +124,7 @@ function perform_command(command) {
 }
 
 function handle_keypress(event) {
-    if (!typing) {
+    if (!is_typing) {
         let text = document.getElementById("text");
         switch (event.key) {
             case 'Backspace':
@@ -135,13 +137,10 @@ function handle_keypress(event) {
                 perform_command(command);
                 print_prompt();
                 break;
-            case 'ArrowUp':
-            case 'ArrowDown':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-                break;
             default:
-                text.innerHTML += event.key;
+                if (event.key.length == 1) {
+                    text.innerHTML += event.key;
+                }
                 break;
         }
     }
@@ -154,5 +153,5 @@ function main() {
 }
 
 window.onload = main();
-window.setInterval(blink_cursor, 750);
+window.setInterval(blink_cursor, 500);
 window.addEventListener('keydown', handle_keypress);
