@@ -64,17 +64,24 @@ function blink_cursor() {
 function perform_command(command) {
     var text = document.getElementById("text");
     text.innerHTML += '\n';
-    switch (command) {
+    command = command.split(" ")
+    switch (command[0]) {
         case "":
             break;
         case "ls":
             text.innerHTML += "info.txt"
             break;
-        case "cat info.txt":
-            text.innerHTML = "Edward Lu - ECE student at Carnegie Mellon University class of 2022"
+        case "cat":
+            switch (command[1]) {
+                case "info.txt":
+                    text.innerHTML += "Edward Lu - ECE student at Carnegie Mellon University class of 2022"
+                    break;
+                default:
+                    text.innerHTML += `cat: ${command[1]}: No such file or directory`
+            }
             break;
         default:
-            text.innerHTML += `command not found: ${command}`
+            text.innerHTML += `command not found: ${command[0]}`
             break;
     }
 }
