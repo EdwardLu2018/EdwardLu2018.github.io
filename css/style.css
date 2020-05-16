@@ -1,0 +1,23 @@
+body {
+    background-color: #000;
+    color: #00af00;
+    font-family: monospace;
+    font-size: 20px;
+}
+
+p {
+    margin: 0px;
+    white-space: pre;
+    display:inline;
+    line-height : 25px;
+}
+
+span {
+    margin: 0px;
+    white-space: pre;
+    display:inline;
+}
+
+.prompt {
+    color: #ffaa00;
+}
