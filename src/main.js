@@ -12,7 +12,8 @@ let prompt = "user@edwards_website:~$ ";
 
 var files = [
 "about.txt",
-"github.txt"
+"github.txt",
+"skills.txt"
 ];
 
 function display_header() {
@@ -51,17 +52,17 @@ function print_prompt() {
     }
 }
 
-function type_info() {
+function type_example() {
     if (i < info.length) {
         let to_add = info.charAt(i);
         let text = document.getElementById("text");
         let terminal = document.getElementById("terminal");
         text.innerHTML += to_add;
-        if (info.charAt(i) == '\n') {
+        ++i;
+        if (i == info.length) {
             print_prompt();
         }
-        ++i;
-        setTimeout(type_info, type_speed);
+        setTimeout(type_example, type_speed);
     }
     else {
         is_typing = false;
@@ -80,17 +81,21 @@ function blink_cursor() {
     }
 }
 
+function trim(s) {
+  return (s || '').replace(/^\s+|\s+$/g, '');
+}
+
 function perform_command(command) {
     let text = document.getElementById("text");
     text.innerHTML += '\n';
-    command = command.split(" ")
+    command = trim(command).split(" ");
     switch (command[0]) {
         case "":
             break;
         case "ls":
             if (command.length == 1) {
                 for (var j = 0; j < files.length; ++j) {
-                    text.innerHTML += files[j] + ' ';
+                    text.innerHTML += files[j] + "     ";
                 }
                 text.innerHTML += '\n';
             }
@@ -110,6 +115,9 @@ function perform_command(command) {
                     text.removeAttribute("id");
                     terminal.insertAdjacentHTML('beforeend', '<a href="https://github.com/EdwardLu2018">link</a><br>');
                     break;
+                case files[2]:
+                    text.innerHTML += "C, Python, Swift, Assembly (x86, ARM), C++, SystemVerilog, Javascript\n"
+                    break;
                 default:
                     text.innerHTML += `cat: ${command[1]}: No such file or directory\n`
             }
@@ -117,6 +125,14 @@ function perform_command(command) {
         case "pwd":
             text.innerHTML += "/the/internet/edwardswebsite/user\n"
             break;
+        case "sudo":
+            text.innerHTML += "You do not have sudo permissions\n"
+            break;
+        case "rm":
+            if (command.length != 1) {
+                text.innerHTML += "heyyy, not cool...\n"
+                break;
+            }
         default:
             text.innerHTML += `command not found: ${command[0]}\n`
             break;
@@ -149,7 +165,7 @@ function handle_keypress(event) {
 function main() {
     display_header();
     print_prompt();
-    type_info();
+    type_example();
 }
 
 window.onload = main();
